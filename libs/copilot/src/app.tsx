@@ -131,7 +131,7 @@ export default function App({ widgetConfig, evoya }: Props) {
           duration: 2000
         }}
       />
-      {evoya.type === 'default' ? <Widget config={widgetConfig} /> : <WidgetEmbedded />}
+      {evoya.type === 'default' ? <Widget config={widgetConfig} evoya={evoya} /> : <WidgetEmbedded />}
     </ThemeProvider>
   );
 }

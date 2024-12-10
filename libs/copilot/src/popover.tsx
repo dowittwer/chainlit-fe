@@ -8,19 +8,20 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 
 import Header from 'components/Header';
 import EvoyaHeader from 'evoya/EvoyaHeader';
+import { EvoyaConfig } from 'evoya/types';
 
 interface Props {
   anchorEl?: HTMLElement | null;
   buttonHeight: string;
+  evoya:EvoyaConfig;
 }
 
-export default function PopOver({ anchorEl }: Props) {
+export default function PopOver({ anchorEl, evoya }: Props) {
   const isMobileLayout = useMediaQuery('(max-width: 599px)');
   const [visualViewportHeight, setVisualViewportHeight] = useState(window.visualViewport?.height ?? window.innerHeight);
   const [visualViewportOffsetTop, setVisualViewportOffsetTop] = useState(window.visualViewport?.offsetTop ?? 0);
 
   const viewportHandler = () => {
-    console.log("visualViewport event")
     if (window.visualViewport) {
       setVisualViewportHeight(window.visualViewport.height);
       setVisualViewportOffsetTop(window.visualViewport.offsetTop);
@@ -38,6 +39,7 @@ export default function PopOver({ anchorEl }: Props) {
         window.visualViewport.removeEventListener("scroll", viewportHandler);
       }
     }
+    
   }, []);
 
   return (
@@ -51,15 +53,22 @@ export default function PopOver({ anchorEl }: Props) {
         flexDirection: 'column',
         inset: {
           xs: `${visualViewportOffsetTop}px 0px ${window.innerHeight - visualViewportOffsetTop}px 0px !important`,
-          sm: 'auto auto 14px -24px !important'
+          sm: evoya.chatBubbleConfig.size=='full_screen'?'10px !important':'auto auto 14px -24px !important'
         },
         height: {
           xs: `${visualViewportHeight}px`,
-          sm: 'min(730px, calc(100vh - 100px))'
+          sm: evoya.chatBubbleConfig 
+              ? evoya.chatBubbleConfig.size=='full_screen' 
+                ? '99vh':`min(${evoya.chatBubbleConfig.height}, calc(100vh - 100px))`
+              : 'min(730px, calc(100vh - 100px))' 
         },
         width: {
           xs: '100%',
-          sm: 'min(400px, 80vw)'
+          sm: evoya.chatBubbleConfig 
+          ? evoya.chatBubbleConfig.size=='full_screen' 
+            ? "98vw" 
+            :`min(${evoya.chatBubbleConfig.width}, 96vw)`
+          :'min(400px, 80vw)'
         },
         overflow: 'hidden',
         borderRadius: {
@@ -68,7 +77,11 @@ export default function PopOver({ anchorEl }: Props) {
         background: (theme: any) => theme.palette.background.default,
         boxShadow:
           '0 6px 6px 0 rgba(0,0,0,.02),0 8px 24px 0 rgba(0,0,0,.12)!important',
-        zIndex: 9999
+        zIndex: 9999,
+        transform: evoya.chatBubbleConfig 
+        && evoya.chatBubbleConfig.size === 'full_screen' 
+          ? 'none !important' 
+          : 'translate(0, 0)'
       }}
     >
       <Fade in={!!anchorEl}>
