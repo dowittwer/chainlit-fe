@@ -53,7 +53,7 @@ export default function PopOver({ anchorEl, evoya }: Props) {
         flexDirection: 'column',
         inset: {
           sm: `${visualViewportOffsetTop}px 0px ${window.innerHeight - visualViewportOffsetTop}px 0px !important`,
-          md: evoya?.chatBubbleConfig?.size=='full_screen'?'10px !important':'auto auto 14px -24px !important'
+          md: evoya?.chatBubbleConfig && evoya?.chatBubbleConfig?.size=='full_screen'?'10px !important':'auto auto 14px -24px !important'
         },
         height: {
           sm: `${visualViewportHeight}px`,
@@ -79,13 +79,13 @@ export default function PopOver({ anchorEl, evoya }: Props) {
           '0 6px 6px 0 rgba(0,0,0,.02),0 8px 24px 0 rgba(0,0,0,.12)!important',
         zIndex: 9999,
         top:{
-          md: evoya?.chatBubbleConfig.size=='full_screen' &&'10px !important'
+          md: evoya?.chatBubbleConfig && evoya?.chatBubbleConfig.size=='full_screen' &&'10px !important'
         },
         left:{
-          md: evoya?.chatBubbleConfig.size=='full_screen' &&'10px !important'
+          md: evoya?.chatBubbleConfig && evoya?.chatBubbleConfig.size=='full_screen' &&'10px !important'
         },
         position:{
-           md: evoya?.chatBubbleConfig.size=='full_screen' &&'fixed !important'
+           md: evoya?.chatBubbleConfig &&  evoya?.chatBubbleConfig.size=='full_screen' &&'fixed !important'
         },
         transform: evoya?.chatBubbleConfig 
         && evoya.chatBubbleConfig.size === 'full_screen' 
