@@ -52,33 +52,42 @@ export default function PopOver({ anchorEl, evoya }: Props) {
         display: 'flex',
         flexDirection: 'column',
         inset: {
-          xs: `${visualViewportOffsetTop}px 0px ${window.innerHeight - visualViewportOffsetTop}px 0px !important`,
-          sm: evoya.chatBubbleConfig.size=='full_screen'?'10px !important':'auto auto 14px -24px !important'
+          sm: `${visualViewportOffsetTop}px 0px ${window.innerHeight - visualViewportOffsetTop}px 0px !important`,
+          md: evoya?.chatBubbleConfig?.size=='full_screen'?'10px !important':'auto auto 14px -24px !important'
         },
         height: {
-          xs: `${visualViewportHeight}px`,
-          sm: evoya.chatBubbleConfig 
+          sm: `${visualViewportHeight}px`,
+          md: evoya?.chatBubbleConfig 
               ? evoya.chatBubbleConfig.size=='full_screen' 
-                ? '99vh':`min(${evoya.chatBubbleConfig.height}, calc(100vh - 100px))`
+                ? '98vh':`min(${evoya.chatBubbleConfig.height}, calc(100vh - 100px))`
               : 'min(730px, calc(100vh - 100px))' 
         },
         width: {
-          xs: '100%',
-          sm: evoya.chatBubbleConfig 
-          ? evoya.chatBubbleConfig.size=='full_screen' 
+          sm: '100%',
+          md: evoya?.chatBubbleConfig 
+          ? evoya?.chatBubbleConfig.size=='full_screen' 
             ? "98vw" 
             :`min(${evoya.chatBubbleConfig.width}, 96vw)`
           :'min(400px, 80vw)'
         },
         overflow: 'hidden',
         borderRadius: {
-          sm:'12px'
+          md:'12px'
         },
         background: (theme: any) => theme.palette.background.default,
         boxShadow:
           '0 6px 6px 0 rgba(0,0,0,.02),0 8px 24px 0 rgba(0,0,0,.12)!important',
         zIndex: 9999,
-        transform: evoya.chatBubbleConfig 
+        top:{
+          md: evoya?.chatBubbleConfig.size=='full_screen' &&'10px !important'
+        },
+        left:{
+          md: evoya?.chatBubbleConfig.size=='full_screen' &&'10px !important'
+        },
+        position:{
+           md: evoya?.chatBubbleConfig.size=='full_screen' &&'fixed !important'
+        },
+        transform: evoya?.chatBubbleConfig 
         && evoya.chatBubbleConfig.size === 'full_screen' 
           ? 'none !important' 
           : 'translate(0, 0)'
