@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { useMemo } from 'react';
+import { useMemo, isValidElement } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { PluggableList } from 'react-markdown/lib';
 import rehypeKatex from 'rehype-katex';
@@ -7,6 +7,7 @@ import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import { visit } from 'unist-util-visit';
+import { VegaLite } from 'react-vega';
 
 import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
@@ -19,6 +20,7 @@ import TableRow from '@mui/material/TableRow';
 
 import { InlineCode } from 'components/atoms/InlineCode';
 import { Code } from 'components/molecules/Code';
+import { MermaidDiagram } from './Mermaid';
 import { ElementRef } from 'components/molecules/messages/components/ElementRef';
 
 import type { IMessageElement } from 'client-types/';
@@ -132,6 +134,24 @@ function Markdown({ refElements, allowHtml, latex, children }: Props) {
           return <InlineCode {...props} />;
         },
         pre({ ...props }) {
+          try {
+            if (props.children && isValidElement(props.children)) {
+              if (props.children?.props?.className?.indexOf('-vega') >= 0) {
+                const vegaSpec = JSON.parse(props.children?.props?.children);
+                return <VegaLite spec={vegaSpec} data={vegaSpec.data} />
+              } else if (props.children?.props?.className?.indexOf('-json') >= 0) {
+                const jsonContent = JSON.parse(props.children?.props?.children);
+                if (jsonContent.$schema && jsonContent.$schema.indexOf('vega.github.io') >= 0) {
+                  return <VegaLite spec={jsonContent} data={jsonContent.data} />
+                }
+              } else if (props.children?.props?.className?.indexOf('-mermaid') >= 0) {
+                const mermaidGraph = props.children?.props?.children;
+                return <MermaidDiagram>{mermaidGraph}</MermaidDiagram>
+              }
+            }
+          } catch(e) {
+            return <Code {...props} />;
+          }
           return <Code {...props} />;
         },
         table({ children, ...props }) {
