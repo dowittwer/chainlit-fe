@@ -26,7 +26,7 @@ const MermaidDiagram = (props: MermaidDiagramProps): ReactElement => {
   const [element, setElement] = useState<HTMLDivElement>();
   const [render_result, setRenderResult] = useState<RenderResult>();
 
-  const container_id = ${props.id || 'd' + Date.now()}-mermaid;
+  const container_id = `${props.id || 'd' + Date.now()}-mermaid`;
   const diagram_text = props.children;
 
   // initialize mermaid here, but beware that it gets called once for every instance of the component
@@ -72,7 +72,7 @@ const MermaidDiagram = (props: MermaidDiagramProps): ReactElement => {
           return; 
         }
 
-        const rr = await mermaid.render(${container_id}-svg, diagram_text);
+        const rr = await mermaid.render(`${container_id}-svg`, diagram_text);
         setRenderResult(rr);
       } catch (e: any) {
         props.onError?.(e);
@@ -121,12 +121,12 @@ const MermaidDiagram = (props: MermaidDiagramProps): ReactElement => {
         </Tooltip>
       </Box>
       <style>
-        {.markdown-body .mermaid-diagram p {
+        {`.markdown-body .mermaid-diagram p {
           white-space: nowrap;
           font-size: 14px;
-        }}
+        }`}
       </style>
-      <div className={mermaid-diagram ${props.className}}
+      <div className={`mermaid-diagram ${props.className}`}
         onClick={props.onClick}
         id={container_id}
         data-testid={props.testId}
