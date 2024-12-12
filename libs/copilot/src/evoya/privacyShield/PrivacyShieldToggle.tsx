@@ -46,7 +46,7 @@ const PrivacyShieldToggle = (): JSX.Element => {
         }
         label={
           <Tooltip
-            title={'components.organisms.privacyShield.info'}
+            title={<Translator path='components.organisms.privacyShield.info'/>}
           >
             <Box sx={{ display: 'flex', alignItems: 'center',color:'gray.main', marginRight: isSmallScreen ? 1:0 }}>
               {
