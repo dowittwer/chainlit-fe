@@ -52,10 +52,12 @@ export default function PopOver({ anchorEl, evoya }: Props) {
         display: 'flex',
         flexDirection: 'column',
         inset: {
+          xs: `${visualViewportOffsetTop}px 0px ${window.innerHeight - visualViewportOffsetTop}px 0px !important`,
           sm: `${visualViewportOffsetTop}px 0px ${window.innerHeight - visualViewportOffsetTop}px 0px !important`,
           md: evoya?.chatBubbleConfig && evoya?.chatBubbleConfig?.size=='full_screen'?'10px !important':'auto auto 14px -24px !important'
         },
         height: {
+          xs: `${visualViewportHeight}px`,
           sm: `${visualViewportHeight}px`,
           md: evoya?.chatBubbleConfig 
               ? evoya.chatBubbleConfig.size=='full_screen' 
@@ -63,6 +65,7 @@ export default function PopOver({ anchorEl, evoya }: Props) {
               : 'min(730px, calc(100vh - 100px))' 
         },
         width: {
+          xs: '100%',
           sm: '100%',
           md: evoya?.chatBubbleConfig 
           ? evoya?.chatBubbleConfig.size=='full_screen' 
