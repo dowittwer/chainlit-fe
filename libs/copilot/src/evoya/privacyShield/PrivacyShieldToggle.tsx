@@ -45,54 +45,58 @@ const PrivacyShieldToggle = (): JSX.Element => {
           )
         }
         label={
-          <Box sx={{ display: 'flex', alignItems: 'center',color:'gray.main', marginRight: isSmallScreen ? 1:0 }}>
-            {
-              isSmallScreen ? (
-                <>
-              <IconButton
-                aria-label="privacy-shield-menu"
-                onClick={handleMenuOpen}
-              >
-                {enabled ? (
-                  <LockOutlinedIcon sx={{ width: 20, height: 20, color:'primary.main' }} />
-                ) : (
-                  <LockOpenOutlinedIcon sx={{ width: 20, height: 20 }} />
-                )}
-              </IconButton>
-              <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleMenuClose}
-              >
-                <MenuItem onClick={handleMenuClose}>
-                  <Switch
-                    checked={enabled}
-                    onChange={(e) => setEnabled(e.target.checked)}
-                    name="privacy_shield"
-                    size="small"
-                    />
-                    Privacy Shield
-                </MenuItem>
-                <MenuItem onClick={handleMenuClose}>
-                  <Switch
-                    checked={enabledVisual}
-                    onChange={() => setEnabledVisual(!enabledVisual)}
-                    name="view"
-                    size="small"
-                    disabled={sections.length === 0}
-                    />
-                    View
-                </MenuItem>
-              </Menu>
-            </>
-              ):(
-                <>
-                {enabled ? <LockOutlinedIcon sx={{marginRight: 1,width: 20, height: 20 }} /> : <LockOpenOutlinedIcon sx={{marginRight: 1, width: 20, height: 20}} />}
-                Privacy Shield
-                </>
-              )
-            }
-          </Box>
+          <Tooltip
+            title={'components.organisms.privacyShield.info'}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center',color:'gray.main', marginRight: isSmallScreen ? 1:0 }}>
+              {
+                isSmallScreen ? (
+                  <>
+                <IconButton
+                  aria-label="privacy-shield-menu"
+                  onClick={handleMenuOpen}
+                >
+                  {enabled ? (
+                    <LockOutlinedIcon sx={{ width: 20, height: 20, color:'primary.main' }} />
+                  ) : (
+                    <LockOpenOutlinedIcon sx={{ width: 20, height: 20 }} />
+                  )}
+                </IconButton>
+                <Menu
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={handleMenuClose}
+                >
+                  <MenuItem onClick={handleMenuClose}>
+                    <Switch
+                      checked={enabled}
+                      onChange={(e) => setEnabled(e.target.checked)}
+                      name="privacy_shield"
+                      size="small"
+                      />
+                      Privacy Shield
+                  </MenuItem>
+                  <MenuItem onClick={handleMenuClose}>
+                    <Switch
+                      checked={enabledVisual}
+                      onChange={() => setEnabledVisual(!enabledVisual)}
+                      name="view"
+                      size="small"
+                      disabled={sections.length === 0}
+                      />
+                      View
+                  </MenuItem>
+                </Menu>
+              </>
+                ):(
+                  <>
+                  {enabled ? <LockOutlinedIcon sx={{marginRight: 1,width: 20, height: 20 }} /> : <LockOpenOutlinedIcon sx={{marginRight: 1, width: 20, height: 20}} />}
+                  Privacy Shield
+                  </>
+                )
+              }
+            </Box>
+          </Tooltip>
         }
         labelPlacement="start"
       />
