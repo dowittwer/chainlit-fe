@@ -65,17 +65,15 @@ const MermaidDiagram = (props: MermaidDiagramProps): ReactElement => {
     (async () => {
       try {
         const parseOptions = { suppressErrors: true };
-        const isValid = mermaid.parse(diagram_text, parseOptions);
-
+        const isValid = await mermaid.parse(diagram_text, parseOptions);
         if (!isValid) {
           setRenderResult(undefined); 
           return; 
         }
-
+        
         const rr = await mermaid.render(`${container_id}-svg`, diagram_text);
         setRenderResult(rr);
       } catch (e: any) {
-        props.onError?.(e);
       }
     })();
   }, [

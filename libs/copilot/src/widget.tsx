@@ -8,12 +8,14 @@ import Fab from '@mui/material/Fab';
 import Fade from '@mui/material/Fade';
 
 import MessageCircleIcon from '@chainlit/app/src/assets/MessageCircle';
+import { EvoyaConfig } from 'evoya/types';
 
 interface Props {
   config: IWidgetConfig;
+  evoya: EvoyaConfig;
 }
 
-export default function Widget({ config }: Props) {
+export default function Widget({ config,evoya }: Props) {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>();
   const customStyle = config.button?.style || {};
   const buttonHeight = customStyle.height || customStyle.size || '60px';
@@ -43,7 +45,7 @@ export default function Widget({ config }: Props) {
 
   return (
     <>
-      <PopOver anchorEl={anchorEl} buttonHeight={buttonHeight} />
+      <PopOver anchorEl={anchorEl} buttonHeight={buttonHeight} evoya={evoya} />
       <Fab
         disableRipple
         aria-label="open copilot"

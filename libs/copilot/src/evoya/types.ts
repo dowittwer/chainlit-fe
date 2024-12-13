@@ -9,12 +9,19 @@ export interface EvoyaConfig {
   logo?: string | null;
   hideWaterMark?: boolean;
   additionalInfo?: EvoyaAdditionalInfo;
+  chatBubbleConfig?:EvoyaChatBubble;
 }
 
 export interface EvoyaAdditionalInfo {
   text?: string;
   link?: string;
   linkText?: string;
+}
+
+export interface EvoyaChatBubble{
+  width?: string;
+  height?: string;
+  size?:string
 }
 
 export interface SectionItem {

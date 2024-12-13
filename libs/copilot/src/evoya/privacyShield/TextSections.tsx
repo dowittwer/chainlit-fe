@@ -106,7 +106,7 @@ const TextSections = (): JSX.Element => {
       // document.removeEventListener("click", textUnselected);
     }
   }, []);
-
+  console.log(textSections)
   return (
     <Box
       sx={{
@@ -168,7 +168,7 @@ const TextSections = (): JSX.Element => {
                   toggleAnon={toggleSectionAnon}
                   setEdit={editSectionAction}
                 />
-                : <span>{section.string}</span>
+                : <span style={{ whiteSpace: 'pre-wrap' }}>{section.string}</span>
             ))}
           </div>
         </Box>

@@ -80,7 +80,7 @@ const Header = ({ showClose, noShow = false }: Props): JSX.Element => {
             <PrivacyShieldToggle />
           </>
         ) : (
-          evoya?.logo ? <img src={evoya.logo} style={{ height: '25px', width: 'auto' }} /> : <AvaiaLogo style={{ height: '25px', width: 'auto' }} />
+          evoya?.logo && <img src={evoya.logo} style={{ height: '25px', width: 'auto' }} />
         )}
       </Stack>
       <Stack direction="row" alignItems="center" spacing={2}>
