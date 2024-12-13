@@ -59,12 +59,19 @@ const MermaidDiagram = (props: MermaidDiagramProps): ReactElement => {
     showSource,
   ]);
 
-  // hook to handle the diagram rendering
   useEffect(() => {
     if (!diagram_text || diagram_text.length === 0) return;
     // create async function inside useEffect to cope with async mermaid.run
     (async () => {
       try {
+        const parseOptions = { suppressErrors: true };
+        const isValid = mermaid.parse(diagram_text, parseOptions);
+
+        if (!isValid) {
+          setRenderResult(undefined); 
+          return; 
+        }
+
         const rr = await mermaid.render(`${container_id}-svg`, diagram_text);
         setRenderResult(rr);
       } catch (e: any) {
@@ -76,20 +83,25 @@ const MermaidDiagram = (props: MermaidDiagramProps): ReactElement => {
   ]);
 
   const mermaidUrl = useMemo<string>(() => {
-    const mermaidState: any = {
-      code: diagram_text,
-      mermaid: {
-        theme: 'default'
-      },
-      autoSync: true,
-      rough: false,
-      updateDiagram: true
-    };
-
-    return `https://mermaid.live/edit#base64:${window.btoa(JSON.stringify(mermaidState))}`;
+    try {  
+      const mermaidState: any = {
+        code: diagram_text,
+        mermaid: {
+          theme: 'default',
+        },
+        autoSync: true,
+        rough: false,
+        updateDiagram: true,
+      };
+  
+      const encodedState = window.btoa(JSON.stringify(mermaidState));
+  
+      return `https://mermaid.live/edit#base64:${encodedState}`;
+    } catch (error) {
+      return 'https://mermaid.live';
+    }
   }, [diagram_text]);
 
-  // render container (div) to hold diagram (nested SVG)
   return (
     <Paper sx={{ position: 'relative', width: '100%', boxShadow: 0, overflow: 'hidden', padding: 2, boxSizing: 'border-box' }}>
       <Box sx={{ position: 'absolute', top: 5, right: 5 }}>
