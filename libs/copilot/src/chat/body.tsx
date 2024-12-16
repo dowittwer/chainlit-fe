@@ -198,7 +198,7 @@ const Chat = () => {
         boxSizing: 'border-box',
         borderRadius: '0 0 10px 10px',
         border: (theme) => evoya?.type === 'dashboard' ? '' : `1px solid ${theme.palette.background.paper}`,
-        borderTop: 0,
+        borderTop: !evoya?.headerConfig?.hideHeaderBar && 0,
       }}
     >
       {upload ? (

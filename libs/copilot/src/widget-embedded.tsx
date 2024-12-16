@@ -64,6 +64,8 @@ export default function WidgetEmbedded() {
     }
   }, [])
 
+
+
   return (
     <Box
       sx={{
@@ -84,7 +86,10 @@ export default function WidgetEmbedded() {
           : style
         }
       >
-        <EvoyaHeader showClose={open} noShow={false} />
+        {
+          !evoya?.headerConfig?.hideHeaderBar &&
+          <EvoyaHeader showClose={open} noShow={false} />
+        }
         <Chat />
       </Box>
     </Box>

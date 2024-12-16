@@ -1,4 +1,4 @@
-import { Stack } from '@mui/material';
+import { Stack, Typography, Box } from '@mui/material';
 
 // import { Logo } from '@chainlit/app/src/components/atoms/logo';
 import AvaiaLogo from 'assets/logo-avaia-full-white.svg?react';
@@ -55,7 +55,6 @@ const Header = ({ showClose, noShow = false }: Props): JSX.Element => {
   if (noShow) {
     return (<></>);
   }
-
   return (
     <Stack
       pl={2}
@@ -80,8 +79,18 @@ const Header = ({ showClose, noShow = false }: Props): JSX.Element => {
             <PrivacyShieldToggle />
           </>
         ) : (
-          evoya?.logo && <img src={evoya.logo} style={{ height: '25px', width: 'auto' }} />
+          evoya?.headerConfig && evoya?.headerConfig?.text_header 
+          ? 
+            <Box textAlign="start" lineHeight={1.25}>
+              <Typography
+                className={evoya?.headerConfig?.text_header?.font || ''} 
+                sx={{fontSize:evoya?.headerConfig?.text_header?.size,color:evoya?.headerConfig?.text_header?.color}}>
+                  {evoya?.headerConfig.text_header.title}
+              </Typography>
+            </Box>
+          : evoya?.logo && <img src={evoya.logo} style={{ height: '25px', width: 'auto' }} />
         )}
+        {evoya?.headerConfig?.showSessionButton && <NewChatButton />}
       </Stack>
       <Stack direction="row" alignItems="center" spacing={2}>
         {(evoya?.type === 'dashboard' && sessionUuid) && (
