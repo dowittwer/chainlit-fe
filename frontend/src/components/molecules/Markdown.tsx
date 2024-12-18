@@ -9,6 +9,8 @@ import remarkMath from 'remark-math';
 import { visit } from 'unist-util-visit';
 import { VegaLite } from 'react-vega';
 
+import deburr from 'lodash.deburr';
+
 import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -95,7 +97,6 @@ function Markdown({ refElements, allowHtml, latex, children }: Props) {
 
   const remarkPlugins = useMemo(() => {
     let remarkPlugins: PluggableList = [cursorPlugin, remarkGfm as any];
-
     if (latex) {
       remarkPlugins = [...remarkPlugins, remarkMath as any];
     }
@@ -106,14 +107,15 @@ function Markdown({ refElements, allowHtml, latex, children }: Props) {
     <ReactMarkdown
       remarkPlugins={remarkPlugins}
       rehypePlugins={rehypePlugins}
-      //skipHtml
       className="markdown-body"
       components={{
         span({ children, ...props }) {
           if (props.node?.properties.dataPrivacyComponent) {
-            return <ResponseTextItem sectionId={props.node?.properties.dataPrivacyComponent.toString()} />
+            return (
+              <ResponseTextItem sectionId={props.node?.properties.dataPrivacyComponent.toString()} />
+            );
           }
-          return <span {...props}>{children}</span>
+          return <span {...props}>{children}</span>;
         },
         a({ children, ...props }) {
           const name = children as string;
@@ -136,20 +138,22 @@ function Markdown({ refElements, allowHtml, latex, children }: Props) {
         pre({ ...props }) {
           try {
             if (props.children && isValidElement(props.children)) {
-              if (props.children?.props?.className?.indexOf('-vega') >= 0) {
-                const vegaSpec = JSON.parse(props.children?.props?.children);
-                return <VegaLite spec={vegaSpec} data={vegaSpec.data} />
-              } else if (props.children?.props?.className?.indexOf('-json') >= 0) {
-                const jsonContent = JSON.parse(props.children?.props?.children);
-                if (jsonContent.$schema && jsonContent.$schema.indexOf('vega.github.io') >= 0) {
-                  return <VegaLite spec={jsonContent} data={jsonContent.data} />
+              const { className, children: rawContent } = props.children?.props || {};
+              const content = deburr(rawContent);
+
+              if (className?.includes('-vega')) {
+                const vegaSpec = JSON.parse(content);
+                return <VegaLite spec={vegaSpec} data={vegaSpec.data} />;
+              } else if (className?.includes('-json')) {
+                const jsonContent = JSON.parse(content);
+                if (jsonContent.$schema?.includes('vega.github.io')) {
+                  return <VegaLite spec={jsonContent} data={jsonContent.data} />;
                 }
-              } else if (props.children?.props?.className?.indexOf('-mermaid') >= 0) {
-                const mermaidGraph = props.children?.props?.children;
-                return <MermaidDiagram>{mermaidGraph}</MermaidDiagram>
+              } else if (className?.includes('-mermaid')) {
+                return <MermaidDiagram>{content}</MermaidDiagram>;
               }
             }
-          } catch(e) {
+          } catch (e) {
             return <Code {...props} />;
           }
           return <Code {...props} />;

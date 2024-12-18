@@ -10,6 +10,7 @@ export interface EvoyaConfig {
   hideWaterMark?: boolean;
   additionalInfo?: EvoyaAdditionalInfo;
   chatBubbleConfig?:EvoyaChatBubble;
+  headerConfig?:EvoyaHeaderConfig;
 }
 
 export interface EvoyaAdditionalInfo {
@@ -22,6 +23,19 @@ export interface EvoyaChatBubble{
   width?: string;
   height?: string;
   size?:string
+}
+
+export interface EvoyaHeaderConfig{
+  hideHeaderBar?:boolean;
+  showSessionButton?:boolean;
+  text_header?:EvoyaTextHeader
+}
+
+export interface EvoyaTextHeader{
+  title?:string;
+  font?:string;
+  size?:string;
+  color?:string;
 }
 
 export interface SectionItem {

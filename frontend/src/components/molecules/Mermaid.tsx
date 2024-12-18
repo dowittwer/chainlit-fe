@@ -9,7 +9,8 @@ import ArticleIcon from '@mui/icons-material/ArticleOutlined';
 import OpenInNewIcon from '@mui/icons-material/OpenInNewOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import { ClipboardCopy } from 'components/atoms/ClipboardCopy';
-
+import {deflate} from 'pako';
+import { fromUint8Array } from 'js-base64';
 import { MouseEvent } from "react";
 
 export interface MermaidDiagramProps {
@@ -81,22 +82,29 @@ const MermaidDiagram = (props: MermaidDiagramProps): ReactElement => {
   ]);
 
   const mermaidUrl = useMemo<string>(() => {
-    try {  
+    try {
+      const formatJSON = (data: unknown): string => JSON.stringify(data, undefined, 2);
+      const serialize = (state: string): string => {
+        const data = new TextEncoder().encode(state);
+        const compressed = deflate(data, { level: 9 }); 
+        return fromUint8Array(compressed, true); 
+      }
       const mermaidState: any = {
         code: diagram_text,
-        mermaid: {
-          theme: 'default',
-        },
-        autoSync: true,
+        mermaid: formatJSON({
+          theme: 'default'
+        }),
+        autoSync: false,
         rough: false,
         updateDiagram: true,
       };
   
-      const encodedState = window.btoa(JSON.stringify(mermaidState));
+      const json = JSON.stringify(mermaidState);
+      const serialized = serialize(json);
   
-      return `https://mermaid.live/edit#base64:${encodedState}`;
+      return `https://mermaid.live/edit#pako:${serialized}`;
     } catch (error) {
-      return 'https://mermaid.live';
+      return '';
     }
   }, [diagram_text]);
 
