@@ -94,7 +94,7 @@ const MermaidDiagram = (props: MermaidDiagramProps): ReactElement => {
         mermaid: formatJSON({
           theme: 'default'
         }),
-        autoSync: true,
+        autoSync: false,
         rough: false,
         updateDiagram: true,
       };
@@ -107,7 +107,7 @@ const MermaidDiagram = (props: MermaidDiagramProps): ReactElement => {
       return '';
     }
   }, [diagram_text]);
-  
+
   return (
     <Paper sx={{ position: 'relative', width: '100%', boxShadow: 0, overflow: 'hidden', padding: 2, boxSizing: 'border-box' }}>
       <Box sx={{ position: 'absolute', top: 5, right: 5 }}>
