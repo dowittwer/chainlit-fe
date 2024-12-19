@@ -61,7 +61,7 @@ export default function UserMessage({
         display="flex"
         flexDirection={evoya?.type === 'dashboard' ? "row-reverse":'row'}
         justifyContent={evoya?.type === 'dashboard' ? "flex-end":'flex-start'}
-        alignItems="center"
+        alignItems={evoya?.type === 'dashboard' ? "start":'center'}
         gap={1}
         width="100%"
         sx={{
