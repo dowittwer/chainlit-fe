@@ -28,7 +28,6 @@ export default function UserMessage({
 }: React.PropsWithChildren<Props>) {
   const config = useConfig();
   const { evoya } = useContext(WidgetContext);
-  console.log(evoya)
   const { askUser, loading } = useContext(MessageContext);
   const { editMessage } = useChatInteract();
   const setMessages = useSetRecoilState(messagesState);
