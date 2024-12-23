@@ -1,5 +1,5 @@
 import { MessageContext } from 'contexts/MessageContext';
-import { useContext, useRef, useState } from 'react';
+import { useContext, useRef, useState, useEffect } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { WidgetContext } from 'context';
 
@@ -33,6 +33,7 @@ export default function UserMessage({
   const setMessages = useSetRecoilState(messagesState);
   const disabled = loading || !!askUser;
   const [isEditing, setIsEditing] = useState(false);
+  const [layout, setLayout] = useState(false);
   const textFieldRef = useRef<HTMLInputElement>(null);
 
   const isEditable = !!config.config?.features.edit_message;
@@ -54,17 +55,24 @@ export default function UserMessage({
     }
   };
 
+  useEffect(() => {
+    if(evoya?.type === 'dashboard' || config.config?.ui.cot ==='full'){
+      setLayout(true)
+    }
+  }, [evoya,config])
+  
+
   return (
     <Box display="flex" flexDirection="column" width="100%">
       <Box
         display="flex"
-        flexDirection={evoya?.type === 'dashboard' ? "row-reverse":'row'}
-        justifyContent={evoya?.type === 'dashboard' ? "flex-end":'flex-start'}
-        alignItems={evoya?.type === 'dashboard' ? "start":'center'}
+        flexDirection={layout ? "row-reverse":'row'}
+        justifyContent={layout ? "flex-end":'flex-start'}
+        alignItems={layout ? "start":'center'}
         gap={1}
         width="100%"
         sx={{
-          marginBottom:evoya?.type === 'dashboard'?'15px':'0',
+          marginBottom:layout?'15px':'0',
           '&:hover .edit-icon': {
             visibility: 'visible'
           }
@@ -73,7 +81,7 @@ export default function UserMessage({
         {!isEditing && isEditable && (
           <IconButton
             sx={{
-              ml: evoya?.type === 'dashboard' ? '0':'auto',
+              ml: layout ? '0':'auto',
               visibility: 'hidden'
             }}
             className="edit-icon"
@@ -84,8 +92,8 @@ export default function UserMessage({
           </IconButton>
         )}
         {
-          evoya?.type === 'dashboard' &&
-          <Box sx={{order:1}}>
+          layout &&
+          <Box sx={{order:1,marginTop:'18px'}}>
             <MessageAvatar author={evoya?.username ?? 'You'} />
           </Box>
           }
