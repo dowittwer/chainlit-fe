@@ -11,7 +11,6 @@ export interface EvoyaConfig {
   additionalInfo?: EvoyaAdditionalInfo;
   chatBubbleConfig?:EvoyaChatBubble;
   headerConfig?:EvoyaHeaderConfig;
-  username?:string | null
 }
 
 export interface EvoyaAdditionalInfo {
