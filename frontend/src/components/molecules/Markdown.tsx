@@ -9,8 +9,6 @@ import remarkMath from 'remark-math';
 import { visit } from 'unist-util-visit';
 import { VegaLite } from 'react-vega';
 
-import deburr from 'lodash.deburr';
-
 import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -90,7 +88,7 @@ function Markdown({ refElements, allowHtml, latex, children }: Props) {
       rehypePlugins = [rehypeRaw as any, ...rehypePlugins];
     }
     if (latex) {
-      rehypePlugins = [[rehypeKatex as any, {output: 'mathml'}], ...rehypePlugins];
+      rehypePlugins = [[rehypeKatex as any, { output: 'mathml' }], ...rehypePlugins];
     }
     return rehypePlugins;
   }, [allowHtml, latex]);
@@ -139,18 +137,16 @@ function Markdown({ refElements, allowHtml, latex, children }: Props) {
           try {
             if (props.children && isValidElement(props.children)) {
               const { className, children: rawContent } = props.children?.props || {};
-              const content = deburr(rawContent);
-
               if (className?.includes('-vega')) {
-                const vegaSpec = JSON.parse(content);
+                const vegaSpec = JSON.parse(rawContent);
                 return <VegaLite spec={vegaSpec} data={vegaSpec.data} />;
               } else if (className?.includes('-json')) {
-                const jsonContent = JSON.parse(content);
+                const jsonContent = JSON.parse(rawContent);
                 if (jsonContent.$schema?.includes('vega.github.io')) {
                   return <VegaLite spec={jsonContent} data={jsonContent.data} />;
                 }
               } else if (className?.includes('-mermaid')) {
-                return <MermaidDiagram>{content}</MermaidDiagram>;
+                return <MermaidDiagram>{rawContent}</MermaidDiagram>;
               }
             }
           } catch (e) {
