@@ -3,21 +3,31 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import getRouterBasename from 'utils/router';
 
-import { useApi, useAuth, useConfig } from '@chainlit/react-client';
+import { useAuth, useConfig } from '@chainlit/react-client';
 
+z;
 export default function AppWrapper() {
   const { isAuthenticated, isReady } = useAuth();
   const { language: languageInUse } = useConfig();
   const { i18n } = useTranslation();
 
-  function handleChangeLanguage(languageBundle: any): void {
-    i18n.addResourceBundle(languageInUse, 'translation', languageBundle);
-    i18n.changeLanguage(languageInUse);
+  async function loadTranslation(language: string) {
+    try {
+      const translation = await import(`../../translations/${language}.json`);
+      i18n.addResourceBundle(language, 'translation', translation);
+      i18n.changeLanguage(language);
+    } catch (error) {
+      console.error(
+        `Could not load translation for language: ${language}`,
+        error
+      );
+    }
   }
 
-  const { data: translations } = useApi<any>(
-    `/project/translations?language=${languageInUse}`
-  );
+  useEffect(() => {
+    if (!languageInUse) return;
+    loadTranslation(languageInUse);
+  }, [languageInUse]);
 
   if (
     isReady &&
@@ -27,11 +37,6 @@ export default function AppWrapper() {
   ) {
     window.location.href = getRouterBasename() + '/login';
   }
-
-  useEffect(() => {
-    if (!translations) return;
-    handleChangeLanguage(translations.translation);
-  }, [translations]);
 
   if (!isReady) {
     return null;
