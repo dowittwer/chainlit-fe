@@ -5,7 +5,7 @@ import getRouterBasename from 'utils/router';
 
 import { useAuth, useConfig } from '@chainlit/react-client';
 
-z;
+
 export default function AppWrapper() {
   const { isAuthenticated, isReady } = useAuth();
   const { language: languageInUse } = useConfig();
