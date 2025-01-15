@@ -1,4 +1,5 @@
 import { WidgetContext } from 'context';
+import { EvoyaConfig } from 'evoya/types';
 import { useContext, useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { Toaster } from 'sonner';
@@ -12,8 +13,7 @@ import { overrideTheme } from '@chainlit/app/src/App';
 import { useTranslation } from '@chainlit/app/src/components/i18n/Translator';
 import { settingsState } from '@chainlit/app/src/state/settings';
 import { makeTheme } from '@chainlit/app/src/theme';
-import { ChainlitContext, useChatInteract, useAuth, useConfig, configState } from '@chainlit/react-client';
-import { EvoyaConfig } from 'evoya/types';
+import { useAuth, useChatInteract, useConfig } from '@chainlit/react-client';
 
 interface Props {
   widgetConfig: IWidgetConfig;
@@ -27,12 +27,10 @@ declare global {
 }
 
 export default function App({ widgetConfig, evoya }: Props) {
-  const apiClient = useContext(ChainlitContext);
   const { accessToken } = useContext(WidgetContext);
   const { config } = useConfig(accessToken);
   const { setAccessToken } = useAuth();
   const [settings, setSettings] = useRecoilState(settingsState);
-  const [recconfig, setConfig] = useRecoilState(configState);
   const [theme, setTheme] = useState<Theme | null>(null);
   const { i18n } = useTranslation();
   const languageInUse = navigator.language || 'en-US';
@@ -49,7 +47,6 @@ export default function App({ widgetConfig, evoya }: Props) {
     if (!config) return;
 
     const themeVariant = widgetConfig.theme || config.ui.theme.default;
-    // const themeVariant = 'light';
     window.theme = config.ui.theme;
     widgetConfig.theme = themeVariant;
     setSettings((old) => ({
@@ -58,23 +55,28 @@ export default function App({ widgetConfig, evoya }: Props) {
     }));
 
     const _theme = overrideTheme(
-      makeTheme(themeVariant || settings.theme, widgetConfig.fontFamily, {
-        values: {
-          xs: 0,
-          sm: 600,
-          md: 900,
-          lg: 1200,
-          xl: 1536
+      makeTheme(
+        themeVariant || settings.theme,
+        widgetConfig.fontFamily,
+        {
+          values: {
+            xs: 0,
+            sm: 600,
+            md: 900,
+            lg: 1200,
+            xl: 1536
+          }
+        },
+        {
+          primary: {
+            main: widgetConfig.button?.style?.bgcolor ?? '#ff2e4e',
+            dark: widgetConfig.button?.style?.bgcolorHover ?? '#ff4764',
+            contrastText: widgetConfig.button?.style?.color ?? '#ffffff'
+          }
         }
-      }, {
-        primary: {
-          main: widgetConfig.button?.style?.bgcolor ?? '#ff2e4e',
-          dark: widgetConfig.button?.style?.bgcolorHover ?? '#ff4764',
-          // light: '#ff7d91',
-          contrastText: widgetConfig.button?.style?.color ?? '#ffffff'
-        }
-      })
+      )
     );
+
     if (!_theme.components) {
       _theme.components = {};
     }
@@ -99,16 +101,22 @@ export default function App({ widgetConfig, evoya }: Props) {
 
     setTheme(_theme);
 
-    apiClient
-      .get(`/project/translations?language=${languageInUse}`, accessToken)
-      .then((res) => res.json())
-      .then((data) => {
-        i18n.addResourceBundle(languageInUse, 'translation', data.translation);
+    const loadTranslations = async () => {
+      try {
+        const translations = await import(
+          `../../../translations/${languageInUse}.json`
+        );
+        i18n.addResourceBundle(languageInUse, 'translation', translations);
         i18n.changeLanguage(languageInUse);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+      } catch (error) {
+        console.error(
+          `Could not load translations for ${languageInUse}:`,
+          error
+        );
+      }
+    };
+
+    loadTranslations();
   }, [config]);
 
   if (!config || !theme) {
@@ -123,15 +131,16 @@ export default function App({ widgetConfig, evoya }: Props) {
         position="top-center"
         toastOptions={{
           style: {
-            fontFamily: theme.typography.fontFamily,
-            // background: theme.palette.background.paper,
-            // border: `1px solid ${theme.palette.divider}`,
-            // color: theme.palette.text.primary
+            fontFamily: theme.typography.fontFamily
           },
           duration: 2000
         }}
       />
-      {evoya.type === 'default' ? <Widget config={widgetConfig} evoya={evoya} /> : <WidgetEmbedded />}
+      {evoya.type === 'default' ? (
+        <Widget config={widgetConfig} evoya={evoya} />
+      ) : (
+        <WidgetEmbedded />
+      )}
     </ThemeProvider>
   );
 }
